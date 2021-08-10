@@ -4,7 +4,7 @@ import { Dai } from '../types/web3-v1-contracts/dai'
 const abi = require('../abi/dai.json')
 
 const RPC_HOST = 'wss://mainnet.infura.io/ws/v3/6d6c70e65c77429482df5b64a4d0c943'
-const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
+const EXCHANGE_ADDRESS = '0x9F40dfA0834D47E9580ccB64aF1150E0E40E3F8B'
 
 async function main() {
   const web3 = new Web3(RPC_HOST)

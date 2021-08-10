@@ -1,99 +1,45 @@
 [
 	{
-		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "spender",
-				"type": "address"
-			},
-			{
-				"indexed": false,
 				"internalType": "uint256",
-				"name": "value",
+				"name": "_tokenAmount",
 				"type": "uint256"
 			}
 		],
-		"name": "Approval",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "from",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "to",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "value",
-				"type": "uint256"
-			}
-		],
-		"name": "Transfer",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "spender",
-				"type": "address"
-			}
-		],
-		"name": "allowance",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
+		"name": "addLiquidity",
+		"outputs": [],
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "spender",
-				"type": "address"
-			},
-			{
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "_minTokens",
 				"type": "uint256"
 			}
 		],
-		"name": "approve",
-		"outputs": [
+		"name": "ethToTokenSwap",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
 			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
+				"internalType": "uint256",
+				"name": "_tokensSold",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_minEth",
+				"type": "uint256"
 			}
 		],
+		"name": "tokenToEthSwap",
+		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
@@ -101,11 +47,22 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "account",
+				"name": "_token",
 				"type": "address"
 			}
 		],
-		"name": "balanceOf",
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_tokenSold",
+				"type": "uint256"
+			}
+		],
+		"name": "getEthAmount",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -118,7 +75,7 @@
 	},
 	{
 		"inputs": [],
-		"name": "totalSupply",
+		"name": "getReserve",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -132,54 +89,33 @@
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "recipient",
-				"type": "address"
-			},
-			{
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "_ethSold",
 				"type": "uint256"
 			}
 		],
-		"name": "transfer",
+		"name": "getTokenAmount",
 		"outputs": [
 			{
-				"internalType": "bool",
+				"internalType": "uint256",
 				"name": "",
-				"type": "bool"
+				"type": "uint256"
 			}
 		],
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "sender",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "recipient",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "transferFrom",
+		"inputs": [],
+		"name": "tokenAddress",
 		"outputs": [
 			{
-				"internalType": "bool",
+				"internalType": "address",
 				"name": "",
-				"type": "bool"
+				"type": "address"
 			}
 		],
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	}
 ]
