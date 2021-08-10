@@ -1,35 +1,73 @@
-import Web3 from 'web3'
-import { Dai } from '../types/web3-v1-contracts/dai'
+import Web3 from "web3";
+import { Exchange } from "../types/web3-v1-contracts/exchange";
+import { web3Provider } from "./web3Provider";
+const abi = require("../abi/exchange.json");
+const EXCHANGE_ADDRESS = "0x9F40dfA0834D47E9580ccB64aF1150E0E40E3F8B";
+import dotenv from 'dotenv'
 
-const abi = require('../abi/dai.json')
+dotenv.config()
+//before calling this function make sure to call the approve function of the PERI TOKEN
+//cuz the addLiquidity function uses transferFrom which is more sescure.
+const addLiquidity = async (tokenAmount: number) => {
+  try {
+    const web3 = web3Provider();
+    const exchange = (new web3.eth.Contract(
+      abi,
+      EXCHANGE_ADDRESS
+    ) as any) as Exchange;
 
-const RPC_HOST = 'wss://mainnet.infura.io/ws/v3/6d6c70e65c77429482df5b64a4d0c943'
-const EXCHANGE_ADDRESS = '0x9F40dfA0834D47E9580ccB64aF1150E0E40E3F8B'
+    let count = await web3.eth.getTransactionCount(
+      '0xdF4FbF279b2b54989C8CCb0AC6CA8c146C3Ed782',
+      'pending',
+    );
+    const gasPriceInWei = await web3.eth.getGasPrice()
+    const gasPriceInGwei = web3.utils.fromWei(gasPriceInWei, 'gwei');
+    let rawTransaction = {
+      from: '0xdF4FbF279b2b54989C8CCb0AC6CA8c146C3Ed782',
+      to: '0x9F40dfA0834D47E9580ccB64aF1150E0E40E3F8B',
+      data: exchange.methods.addLiquidity(tokenAmount).encodeABI(),
+      gasPrice: gasPriceInGwei,
+      nonce: count,
+      gasLimit: web3.utils.toHex(2000000),
+    };
+    let signed = await web3.eth.accounts.signTransaction(
+      rawTransaction,
+      process.env.PRIVATE_KEY!,
+    );
+    await web3.eth
+      .sendSignedTransaction(signed.rawTransaction!)
+      .on('confirmation', (confirmationNumber, receipt) => {
+        if (confirmationNumber === 1) {
+          return true;
+        }
+      })
+      .on('error', error => {
+        return false;
+      })
+      .on('transactionHash', async hash => {
+        console.log('transaction has -->', hash);
+      });
+    // const tokenReserve = await exchange.methods
+    //   .addLiquidity(tokenAmount)
+    //   .call();
+    // console.log(`Token reserve of our swap is ${tokenReserve}`);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
-async function main() {
-  const web3 = new Web3(RPC_HOST)
-  const fromWei = web3.utils.fromWei
+const main = async () => {
+  try {
+    const web3 = web3Provider();
+    const exchange = (new web3.eth.Contract(
+      abi,
+      EXCHANGE_ADDRESS
+    ) as any) as Exchange;
+    const tokenReserve = await exchange.methods.getReserve().call();
+    console.log(`Token reserve of our swap is ${tokenReserve}`);
+  } catch (err) {
+    console.log("Err", err);
+  }
+};
 
-  const dai = (new web3.eth.Contract(abi, DAI_ADDRESS) as any) as Dai
-  const balance = await dai.methods.balanceOf('0x70b144972C5Ef6CB941A5379240B74239c418CD4').call()
-  console.log(`Our DAI balance is: ${fromWei(balance)}`)
-
-
-  const totalSupply = await dai.methods.totalSupply().call()
-  console.log("Total supply", totalSupply)
-  
-  console.log('Listening for transfer events...')
-
-  dai.events.Transfer((err, e) => {
-    if (err) {
-      console.error(err)
-      return
-    }
-    console.log(`${fromWei(e.returnValues.wad)} DAI transferred ${e.returnValues.src} -> ${e.returnValues.dst}`)
-  })
-}
-
-main().catch(e => {
-  console.error(e)
-  process.exit(1)
-})
+main();
