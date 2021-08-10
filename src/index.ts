@@ -20,13 +20,17 @@ const addLiquidity = async (tokenAmount: number) => {
       '0xdF4FbF279b2b54989C8CCb0AC6CA8c146C3Ed782',
       'pending',
     );
+
+    console.log("COunr", count)
     const gasPriceInWei = await web3.eth.getGasPrice()
     const gasPriceInGwei = web3.utils.fromWei(gasPriceInWei, 'gwei');
+    console.log("gasPriceInGwei", gasPriceInWei)
+    console.log("web3.utils.toHex(2000000)", web3.utils.toHex(2000000))
     let rawTransaction = {
       from: '0xdF4FbF279b2b54989C8CCb0AC6CA8c146C3Ed782',
       to: '0x9F40dfA0834D47E9580ccB64aF1150E0E40E3F8B',
       data: exchange.methods.addLiquidity(tokenAmount).encodeABI(),
-      gasPrice: gasPriceInGwei,
+      gasPrice: gasPriceInWei,
       nonce: count,
       gasLimit: web3.utils.toHex(2000000),
     };
@@ -47,10 +51,6 @@ const addLiquidity = async (tokenAmount: number) => {
       .on('transactionHash', async hash => {
         console.log('transaction has -->', hash);
       });
-    // const tokenReserve = await exchange.methods
-    //   .addLiquidity(tokenAmount)
-    //   .call();
-    // console.log(`Token reserve of our swap is ${tokenReserve}`);
   } catch (err) {
     console.log(err);
   }
@@ -65,6 +65,8 @@ const main = async () => {
     ) as any) as Exchange;
     const tokenReserve = await exchange.methods.getReserve().call();
     console.log(`Token reserve of our swap is ${tokenReserve}`);
+
+    // addLiquidity(50)
   } catch (err) {
     console.log("Err", err);
   }
